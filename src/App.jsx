@@ -3,10 +3,36 @@ import { HardHat, MapPin, Phone, Mail, ArrowRight, Building2, Ruler, Hammer } fr
 
 export default function App() {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormSubmitted(true);
+
+    const formData = new FormData(e.target);
+
+    // Add your Web3Forms access key
+    formData.append("access_key", "d76741b9-b67a-4906-a99a-5eb07e6e57dd");
+    formData.append("from_name", "Samarrtha Construction Website");
+    formData.append("subject", "New Project Inquiry - Samarrtha Construction");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setFormSubmitted(true);
+      } else {
+        alert("Something went wrong. Please call us directly.");
+      }
+    } catch (error) {
+      alert("Submission failed. Please call us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Accent color from the Wix design (Rust/Orange)
@@ -196,26 +222,26 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm mb-2">First Name *</label>
-                    <input type="text" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
+                    <input type="text" name="firstName" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
                   </div>
                   <div>
                     <label className="block text-sm mb-2">Last Name *</label>
-                    <input type="text" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
+                    <input type="text" name="lastName" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm mb-2">Email Address *</label>
-                    <input type="email" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
+                    <input type="email" name="email" required className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
                   </div>
                   <div>
                     <label className="block text-sm mb-2">Phone Number</label>
-                    <input type="tel" className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
+                    <input type="tel" name="phone" className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm mb-2">Project Type *</label>
-                  <select className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none appearance-none">
+                  <select name="projectType" className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none appearance-none">
                     <option>RCC Structural Framework</option>
                     <option>Load-Bearing Masonry</option>
                     <option>Residential Construction</option>
@@ -224,10 +250,10 @@ export default function App() {
                 </div>
                 <div>
                   <label className="block text-sm mb-2">Message</label>
-                  <textarea rows="4" placeholder="Tell us about your project, plot location, etc..." className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none"></textarea>
+                  <textarea name="message" rows="4" placeholder="Tell us about your project, plot location, etc..." className="w-full border border-gray-300 p-3 bg-transparent focus:border-black focus:outline-none"></textarea>
                 </div>
-                <button type="submit" className="w-full bg-[#c65133] hover:bg-[#a64228] text-white font-medium py-4 text-lg transition">
-                  Send Inquiry
+                <button type="submit" disabled={isSubmitting} className="w-full bg-[#c65133] hover:bg-[#a64228] text-white font-medium py-4 text-lg transition">
+                  {isSubmitting ? "Sending..." : "Send Inquiry"}
                 </button>
               </form>
             )}
