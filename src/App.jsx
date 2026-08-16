@@ -12,7 +12,7 @@ export default function App() {
     const formData = new FormData(e.target);
 
     // Add your Web3Forms access key
-    formData.append("access_key", "d76741b9-b67a-4906-a99a-5eb07e6e57dd");
+    formData.append("access_key", import.meta.env.VITE_WEB3FORMS_KEY);
     formData.append("from_name", "Samarrtha Construction Website");
     formData.append("subject", "New Project Inquiry - Samarrtha Construction");
 
